@@ -41,3 +41,49 @@ app.get('/talker/:id', (request, response) => {
   }
   return response.status(200).json(talker);
 });
+
+// REQUISITO 3
+
+// Validação do EMAIL
+function validateEmail(request, response, next) {
+  const { email } = request.body;
+  if (!email || email === '') {
+    return response.status(400).json({
+      message: 'O campo "email" é obrigatório',
+    });
+  }
+  // regex para email
+  const regex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{3}$/;
+  if (!regex.test(email)) {
+    return response.status(400).json({
+      message: 'O "email" deve ter o formato "email@email.com"',
+    });
+  }
+  next();
+}
+// Validação da SENHA
+function validatePassword(request, response, next) {
+  const SIZE = 6;
+  const { password } = request.body;
+  if (!password || password === '') {
+    return response.status(400).json({
+      message: 'O campo "password" é obrigatório',
+    });
+  }
+  if (password.length < SIZE) {
+    return response.status(400).json({
+      message: 'O "password" deve ter pelo menos 6 caracteres',
+    });
+  }
+  next();
+}
+
+app.post('/login', validateEmail, validatePassword, (request, response) => {
+  /*
+    Peguei esse coisa do token aqui https://stackoverflow.com/questions/9120915/jquery-create-a-random-16-digit-number-possible
+    Ele serve pra gerar uma string de 16 caracteres
+  */
+  const token = `${Math.random()} `.substring(2, 10) + `${Math.random()} `.substring(2, 10);
+
+  return response.status(200).json({ token });
+});
