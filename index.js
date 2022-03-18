@@ -28,3 +28,16 @@ app.get('/talker', (_request, response) => {
     return err;
   }
 });
+
+// REQUISITO 2
+app.get('/talker/:id', (request, response) => {
+  const { id } = request.params;
+  const talkers = JSON.parse(fs.readFileSync(FILE, 'utf-8'));
+  const talker = talkers.find((person) => String(person.id) === id);
+  if (!talker) {
+    return response.status(404).json({
+      message: 'Pessoa palestrante não encontrada',
+    });
+  }
+  return response.status(200).json(talker);
+});
