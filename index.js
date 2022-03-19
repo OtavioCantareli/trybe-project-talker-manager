@@ -160,7 +160,7 @@ function validateTalk(request, response, next) {
     });
   }
   const { watchedAt, rate } = talk;
-  if (!watchedAt || !rate) {
+  if (watchedAt === undefined || rate === undefined) {
     return response.status(400).json({
       message:
         'O campo "talk" é obrigatório e "watchedAt" e "rate" não podem ser vazios',
