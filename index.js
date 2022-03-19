@@ -191,3 +191,26 @@ app.post(
     });
   },
 );
+
+// REQUISITO 5
+
+app.put(
+  '/talker/:id',
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  validateDateAndRate,
+  (request, response) => {
+    const { id } = request.params;
+    const { age, name, talk } = request.body;
+    const talkers = JSON.parse(fs.readFileSync(FILE, 'utf-8'));
+    const talkerIndex = talkers.findIndex((person) => String(person.id) === id);
+    talkers[talkerIndex] = { ...talkers[talkerIndex], name, age, talk };
+    // console.log(talkers);
+    fs.writeFileSync(FILE, JSON.stringify(talkers));
+    return response.status(200).json({
+      id, name, age, talk,
+    });
+  },
+);
