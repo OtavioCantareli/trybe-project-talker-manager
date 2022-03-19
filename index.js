@@ -84,6 +84,23 @@ app.post('/login', validateEmail, validatePassword, (request, response) => {
     Ele serve pra gerar uma string de 16 caracteres
   */
   const token = `${Math.random()} `.substring(2, 10) + `${Math.random()} `.substring(2, 10);
-
   return response.status(200).json({ token });
 });
+
+// REQUISITO 4
+
+function validateToken(request, response, next) {
+  const SIZE = 16;
+  const token = request.headers.authorization;
+  if (!token) {
+    return response.status(401).json({
+      message: 'Token não encontrado',
+    });
+  }
+  if (token.length !== SIZE) {
+    return response.status(401).json({
+      message: 'Token inválido',
+    });
+  }
+  next();
+}
