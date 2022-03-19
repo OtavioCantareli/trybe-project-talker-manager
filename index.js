@@ -202,13 +202,13 @@ app.put(
   validateTalk,
   validateDateAndRate,
   (request, response) => {
-    const { id } = request.params;
+    let { id } = request.params;
     const { age, name, talk } = request.body;
     const talkers = JSON.parse(fs.readFileSync(FILE, 'utf-8'));
     const talkerIndex = talkers.findIndex((person) => String(person.id) === id);
     talkers[talkerIndex] = { ...talkers[talkerIndex], name, age, talk };
-    // console.log(talkers);
     fs.writeFileSync(FILE, JSON.stringify(talkers));
+    id = parseInt(id, 10);
     return response.status(200).json({
       id, name, age, talk,
     });
