@@ -137,4 +137,22 @@ function validateAge(request, response, next) {
   next();
 }
 
+function validateDateAndRate(request, response, next) {
+  // regex para validar a data no formato DD/MM/AAAA, peguei aqui https://stackoverflow.com/questions/5465375/javascript-date-regex-dd-mm-yyyy
+  const regex = /^(0?[1-9]|[12][0-9]|3[01])[/](0?[1-9]|1[012])[/-]\d{4}$/;
+  const { talk } = request.body;
+  const { watchedAt, rate } = talk;
+  if (!regex.test(watchedAt)) {
+    return response.status(400).json({
+      message: 'O campo "watchedAt" deve ter o formato "dd/mm/aaaa"',
+    });
+  }
+  if (typeof rate !== 'number' || rate < 1 || rate > 5) {
+    return response.status(400).json({
+      message: 'O campo "rate" deve ser um inteiro de 1 à 5',
+    });
+  }
+  next();
+}
+
 
