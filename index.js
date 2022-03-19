@@ -21,12 +21,8 @@ app.listen(PORT, () => {
 
 // REQUISITO 1
 app.get('/talker', (_request, response) => {
-  try {
-    const talkers = fs.readFileSync(FILE, 'utf-8');
-    return response.status(200).json(JSON.parse(talkers));
-  } catch (err) {
-    return err;
-  }
+  const talkers = JSON.parse(fs.readFileSync(FILE, 'utf-8'));
+  return response.status(200).json(talkers);
 });
 
 // REQUISITO 2
@@ -180,5 +176,18 @@ app.post(
   validateAge,
   validateTalk,
   validateDateAndRate,
-  (request, response) => response.status(201).json(request.body),
+  (request, response) => {
+    const talkers = JSON.parse(fs.readFileSync(FILE, 'utf-8'));
+    const id = talkers.length + 1;
+    const { age, name, talk } = request.body;
+    const talker = { name, age, id, talk };
+    talkers.push(talker);
+    fs.writeFileSync(FILE, JSON.stringify(talkers));
+    return response.status(201).json({
+      id,
+      name,
+      age,
+      talk,
+    });
+  },
 );
