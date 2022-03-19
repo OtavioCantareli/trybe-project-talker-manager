@@ -104,3 +104,21 @@ function validateToken(request, response, next) {
   }
   next();
 }
+
+function validateName(request, response, next) {
+  const SIZE = 3;
+  const { name } = request.body;
+  if (!name || name === '') {
+    return response.status(400).json({
+      message: 'O campo "name" é obrigatório',
+    });
+  }
+  if (name.length < SIZE) {
+    return response.status(400).json({
+      message: 'O "name" deve ter pelo menos 3 caracteres',
+    });
+  }
+  next();
+}
+
+
