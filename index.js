@@ -173,4 +173,12 @@ function validateTalk(request, response, next) {
   next();
 }
 
-
+app.post(
+  '/talker',
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  validateDateAndRate,
+  (request, response) => response.status(201).json(request.body),
+);
