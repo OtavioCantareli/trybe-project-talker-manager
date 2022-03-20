@@ -214,3 +214,14 @@ app.put(
     });
   },
 );
+
+// REQUISITO 6
+
+app.delete('/talker/:id', validateToken, (request, response) => {
+  const { id } = request.params;
+  const talkers = JSON.parse(fs.readFileSync(FILE, 'utf-8'));
+  const talkerIndex = talkers.findIndex((person) => String(person.id) === id);
+  talkers.splice(talkerIndex, 1);
+  fs.writeFileSync(FILE, JSON.stringify(talkers));
+  return response.status(204).send();
+});
