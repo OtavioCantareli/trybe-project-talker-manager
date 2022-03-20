@@ -26,8 +26,10 @@ app.get('/talker', (_request, response) => {
 });
 
 // REQUISITO 2
-app.get('/talker/:id', (request, response) => {
+app.get('/talker/:id', (request, response, next) => {
   const { id } = request.params;
+  if (id === 'search') return next();
+  console.log(id);
   const talkers = JSON.parse(fs.readFileSync(FILE, 'utf-8'));
   const talker = talkers.find((person) => String(person.id) === id);
   if (!talker) {
@@ -224,4 +226,20 @@ app.delete('/talker/:id', validateToken, (request, response) => {
   talkers.splice(talkerIndex, 1);
   fs.writeFileSync(FILE, JSON.stringify(talkers));
   return response.status(204).send();
+});
+
+// REQUISITO 7
+
+app.get('/talker/search', validateToken, (request, response) => {
+  const { name } = request.query;
+  const talkers = JSON.parse(fs.readFileSync(FILE, 'utf-8'));
+  console.log('xablau', name);
+  if (!name || name === '') {
+    return response.status(200).json(talkers);
+  }
+  const searchQuery = talkers.filter((talk) => talk.name.includes(name));
+  if (!searchQuery) {
+    return response.status(200).send([]);
+  }
+  return response.status(200).json(searchQuery);
 });
